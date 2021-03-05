@@ -22,7 +22,24 @@ const nlu = new NaturalLanguageUnderstandingV1({
   serviceUrl: api_url,
 });
 
-const analyzeParams = {
+const analyzeUrl = {
+  url:'',
+  features: {
+    entities: {
+      emotion: true,
+      sentiment: true,
+      limit: 2,
+    },
+    keywords: {
+      emotion: true,
+      sentiment: true,
+      limit: 2,
+    },
+  },
+};
+
+const analyzeText = {
+  text:'',
   features: {
     entities: {
       emotion: true,
@@ -42,9 +59,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/url/emotion", (req, res) => {
-    analyzeParams.url = req.query.url;
+    analyzeUrl.url = req.query.url;
   nlu
-    .analyze(analyzeParams)
+    .analyze(analyzeUrl)
     .then((analysisResults) => {
       console.log(
         JSON.stringify(analysisResults.result.keywords[0].emotion, null)
@@ -59,9 +76,9 @@ app.get("/url/emotion", (req, res) => {
 });
 
 app.get("/url/sentiment", (req, res) => {
-    analyzeParams.url = req.query.url;
+  analyzeUrl.url = req.query.url;
   nlu
-    .analyze(analyzeParams)
+    .analyze(analyzeUrl)
     .then((analysisResults) => {
       console.log(JSON.stringify(analysisResults.result.keywords[0].sentiment.label, null));
       return res.send(
@@ -77,9 +94,9 @@ app.get("/url/sentiment", (req, res) => {
 });
 
 app.get("/text/emotion", (req, res) => {
-    analyzeParams.text = req.query.text;
+    analyzeText.text = req.query.text;
   nlu
-    .analyze(analyzeParams)
+    .analyze(analyzeText)
     .then((analysisResults) => {
       console.log(JSON.stringify(analysisResults.result.keywords[0].emotion, null, 1));
       return res.send(JSON.stringify(analysisResults.result.keywords[0].emotion, null, 1));
@@ -90,9 +107,9 @@ app.get("/text/emotion", (req, res) => {
 });
 
 app.get("/text/sentiment", (req, res) => {
-    analyzeParams.text = req.query.text;
+    analyzeText.text = req.query.text;
   nlu
-    .analyze(analyzeParams)
+    .analyze(analyzeText)
     .then((analysisResults) => {
       console.log(JSON.stringify(analysisResults.result.keywords[0].sentiment.label, null, 1));
       return res.send(JSON.stringify(analysisResults.result.keywords[0].sentiment.label, null, 1));
